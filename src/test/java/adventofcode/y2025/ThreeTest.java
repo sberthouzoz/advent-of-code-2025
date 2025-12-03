@@ -28,7 +28,9 @@ class ThreeTest {
     public static Stream<Arguments> getIndexOfMax() {
         return Stream.of(
                 Arguments.of(new int[]{9, 8, 7, 6, 5, 4, 3, 2, 1, 1, 1, 1, 1, 1, 1}, new Three.IndexOfMax(0, 1)),
-                Arguments.of(new int[]{8, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 9}, new Three.IndexOfMax(0, 14))
+                Arguments.of(new int[]{8, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 9}, new Three.IndexOfMax(0, 14)),
+                Arguments.of(new int[]{2, 3, 4, 2, 3, 4, 2, 3, 4, 2, 3, 4, 2, 7, 8}, new Three.IndexOfMax(13, 14)),
+                Arguments.of(new int[]{8, 1, 8, 1, 8, 1, 9, 1, 1, 1, 1, 2, 1, 1, 1}, new Three.IndexOfMax(6, 11))
         );
     }
 
