@@ -20,4 +20,13 @@ class ThreeTest {
         assertThat(result).isEqualTo(new int[]{9, 8, 7, 6, 5, 4, 3, 2, 1, 1, 1, 1, 1, 1, 1});
     }
 
+    @Test
+    void getIndexOfMax() {
+        var bank = new int[]{9, 8, 7, 6, 5, 4, 3, 2, 1, 1, 1, 1, 1, 1, 1};
+
+        var result = Three.getIndexOfMax(bank);
+
+        assertThat(result).isEqualTo(new Three.IndexOfMax(0, 1));
+    }
+
 }
