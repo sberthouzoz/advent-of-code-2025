@@ -14,6 +14,7 @@ public class Three {
                 .sorted(Comparator.comparingInt(IndexOfMax::idx2).reversed())
                 .limit(2)
                 .mapToInt(IndexOfMax::idx1)
+                .sorted()
                 .toArray();
         return new IndexOfMax(maxIdx[0], maxIdx[1]);
     }
