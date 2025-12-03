@@ -83,4 +83,21 @@ class ThreeTest {
 
         assertThat(result).isEqualTo(expectedIdx);
     }
+
+    @Test
+    void maxOfBank12() {
+
+        var maxOfBank = Three.maxOfBank(new int[]{9, 8, 7, 6, 5, 4, 3, 2, 1, 1, 1, 1, 1, 1, 1}, new Three.IndexOfMax12(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11));
+
+        assertThat(maxOfBank).isEqualTo(987654321111L);
+    }
+
+    @Test
+    void examplePart2() {
+        var result = input.lines().map(Three::parseBank)
+                .map(bank -> new Three.BankAndIndexes12(bank, Three.getIndexOfMax12(bank)))
+                .mapToDouble(bi -> Three.maxOfBank(bi.bank(), bi.indexes()))
+                .sum();
+        assertThat(result).isEqualTo(3121910778619L);
+    }
 }
