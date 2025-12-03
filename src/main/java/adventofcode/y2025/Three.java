@@ -1,10 +1,23 @@
 package adventofcode.y2025;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Comparator;
 import java.util.function.Predicate;
 import java.util.stream.IntStream;
 
 public class Three {
+    public static void main(String[] args) throws IOException {
+        try (var lines = Files.lines(Path.of(args[0]))) {
+            var totalOutputJoltage = lines.map(Three::parseBank)
+                    .map(bank -> new BankAndIndexes(bank, Three.getIndexOfMax(bank)))
+                    .mapToInt(bi -> Three.maxOfBank(bi.bank(), bi.indexes()))
+                    .sum();
+
+            System.out.println("totalOutputJoltage = " + totalOutputJoltage);
+        }
+    }
     static int[] parseBank(String bank) {
         return bank.chars().map(c -> Character.digit(c, 10)).toArray();
     }
@@ -35,5 +48,8 @@ public class Three {
     }
 
     record IndexOfMax(int idx1, int idx2) {
+    }
+
+    record BankAndIndexes(int[] bank, Three.IndexOfMax indexes) {
     }
 }

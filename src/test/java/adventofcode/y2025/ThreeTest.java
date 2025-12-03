@@ -54,13 +54,10 @@ class ThreeTest {
     @Test
     void example() {
         var result = input.lines().map(Three::parseBank)
-                .map(bank -> new BankAndIndexes(bank, Three.getIndexOfMax(bank)))
+                .map(bank -> new Three.BankAndIndexes(bank, Three.getIndexOfMax(bank)))
                 .mapToInt(bi -> Three.maxOfBank(bi.bank(), bi.indexes()))
                 .sum();
         assertThat(result).isEqualTo(357);
-    }
-
-    record BankAndIndexes(int[] bank, Three.IndexOfMax indexes) {
     }
 
 }
