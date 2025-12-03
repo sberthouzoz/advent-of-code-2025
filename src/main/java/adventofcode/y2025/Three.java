@@ -5,6 +5,8 @@ import org.apache.commons.lang3.IntegerRange;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Comparator;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -15,12 +17,25 @@ import static java.lang.Math.max;
 public class Three {
     public static void main(String[] args) throws IOException {
         try (var lines = Files.lines(Path.of(args[0]))) {
+            var start = Instant.now();
             var totalOutputJoltage = lines.map(Three::parseBank)
                     .map(bank -> new BankAndIndexes(bank, Three.getIndexOfMax(bank)))
                     .mapToInt(bi -> Three.maxOfBank(bi.bank(), bi.indexes()))
                     .sum();
-
+            var end = Instant.now();
+            System.out.println("Duration = " + Duration.between(start, end));
             System.out.println("totalOutputJoltage = " + totalOutputJoltage);
+        }
+        // part2
+        try (var lines = Files.lines(Path.of(args[0]))) {
+            var start = Instant.now();
+            var totalOutputJoltage = lines.map(Three::parseBank)
+                    .map(bank -> new BankAndIndexes12(bank, Three.getIndexOfMax12(bank)))
+                    .mapToDouble(bi -> Three.maxOfBank(bi.bank(), bi.indexes()))
+                    .sum();
+            var end = Instant.now();
+            System.out.println("[part2] Duration = " + Duration.between(start, end));
+            System.out.printf("[part2] totalOutputJoltage = %.0f%n%n", totalOutputJoltage);
         }
     }
 
