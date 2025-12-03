@@ -5,7 +5,9 @@ import org.apache.commons.lang3.IntegerRange;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.IntStream;
@@ -70,27 +72,54 @@ public class Three {
                 .sorted(Comparator.comparingInt(IndexOfMax::idx2).reversed())
                 .toList();
         int[] nextPossibleIndex = new int[1];
+        var usedIndex = new ArrayList<Integer>();
         return new IndexOfMax12(
-                extractIdx(nextPossibleIndex, bankWithIdx.stream().filter(iv -> IntegerRange.of(0, bank.length - 12).contains(iv.idx1())).findFirst()),
-                extractIdx(nextPossibleIndex, bankWithIdx.stream().filter(iv -> IntegerRange.of(max(1, nextPossibleIndex[0]), bank.length - 11).contains(iv.idx1())).findFirst()),
-                extractIdx(nextPossibleIndex, bankWithIdx.stream().filter(iv -> IntegerRange.of(max(2, nextPossibleIndex[0]), bank.length - 10).contains(iv.idx1())).findFirst()),
-                extractIdx(nextPossibleIndex, bankWithIdx.stream().filter(iv -> IntegerRange.of(max(3, nextPossibleIndex[0]), bank.length - 9).contains(iv.idx1())).findFirst()),
-                extractIdx(nextPossibleIndex, bankWithIdx.stream().filter(iv -> IntegerRange.of(max(4, nextPossibleIndex[0]), bank.length - 8).contains(iv.idx1())).findFirst()),
-                extractIdx(nextPossibleIndex, bankWithIdx.stream().filter(iv -> IntegerRange.of(max(5, nextPossibleIndex[0]), bank.length - 7).contains(iv.idx1())).findFirst()),
-                extractIdx(nextPossibleIndex, bankWithIdx.stream().filter(iv -> IntegerRange.of(max(6, nextPossibleIndex[0]), bank.length - 6).contains(iv.idx1())).findFirst()),
-                extractIdx(nextPossibleIndex, bankWithIdx.stream().filter(iv -> IntegerRange.of(max(7, nextPossibleIndex[0]), bank.length - 5).contains(iv.idx1())).findFirst()),
-                extractIdx(nextPossibleIndex, bankWithIdx.stream().filter(iv -> IntegerRange.of(max(8, nextPossibleIndex[0]), bank.length - 4).contains(iv.idx1())).findFirst()),
-                extractIdx(nextPossibleIndex, bankWithIdx.stream().filter(iv -> IntegerRange.of(max(9, nextPossibleIndex[0]), bank.length - 3).contains(iv.idx1())).findFirst()),
-                extractIdx(nextPossibleIndex, bankWithIdx.stream().filter(iv -> IntegerRange.of(max(10, nextPossibleIndex[0]), bank.length - 2).contains(iv.idx1())).findFirst()),
-                extractIdx(nextPossibleIndex, bankWithIdx.stream().filter(iv -> IntegerRange.of(max(11, nextPossibleIndex[0]), bank.length - 1).contains(iv.idx1())).findFirst())
+                extractIdx(nextPossibleIndex, usedIndex, bankWithIdx.stream()
+                        .filter(iv -> IntegerRange.of(0, bank.length - 12).contains(iv.idx1())).findFirst()),
+                extractIdx(nextPossibleIndex, usedIndex, bankWithIdx.stream()
+                        .filter(iv -> !usedIndex.contains(iv.idx1()))
+                        .filter(iv -> IntegerRange.of(max(1, nextPossibleIndex[0]), bank.length - 11).contains(iv.idx1())).findFirst()),
+                extractIdx(nextPossibleIndex, usedIndex, bankWithIdx.stream()
+                        .filter(iv -> !usedIndex.contains(iv.idx1()))
+                        .filter(iv -> IntegerRange.of(max(2, nextPossibleIndex[0]), bank.length - 10).contains(iv.idx1())).findFirst()),
+                extractIdx(nextPossibleIndex, usedIndex, bankWithIdx.stream()
+                        .filter(iv -> !usedIndex.contains(iv.idx1()))
+                        .filter(iv -> IntegerRange.of(max(3, nextPossibleIndex[0]), bank.length - 9).contains(iv.idx1())).findFirst()),
+                extractIdx(nextPossibleIndex, usedIndex, bankWithIdx.stream()
+                        .filter(iv -> !usedIndex.contains(iv.idx1()))
+                        .filter(iv -> IntegerRange.of(max(4, nextPossibleIndex[0]), bank.length - 8).contains(iv.idx1())).findFirst()),
+                extractIdx(nextPossibleIndex, usedIndex, bankWithIdx.stream()
+                        .filter(iv -> !usedIndex.contains(iv.idx1()))
+                        .filter(iv -> IntegerRange.of(max(5, nextPossibleIndex[0]), bank.length - 7).contains(iv.idx1())).findFirst()),
+                extractIdx(nextPossibleIndex, usedIndex, bankWithIdx.stream()
+                        .filter(iv -> !usedIndex.contains(iv.idx1()))
+                        .filter(iv -> IntegerRange.of(max(6, nextPossibleIndex[0]), bank.length - 6).contains(iv.idx1())).findFirst()),
+                extractIdx(nextPossibleIndex, usedIndex, bankWithIdx.stream()
+                        .filter(iv -> !usedIndex.contains(iv.idx1()))
+                        .filter(iv -> IntegerRange.of(max(7, nextPossibleIndex[0]), bank.length - 5).contains(iv.idx1())).findFirst()),
+                extractIdx(nextPossibleIndex, usedIndex, bankWithIdx.stream()
+                        .filter(iv -> !usedIndex.contains(iv.idx1()))
+                        .filter(iv -> IntegerRange.of(max(8, nextPossibleIndex[0]), bank.length - 4).contains(iv.idx1())).findFirst()),
+                extractIdx(nextPossibleIndex, usedIndex, bankWithIdx.stream()
+                        .filter(iv -> !usedIndex.contains(iv.idx1()))
+                        .filter(iv -> IntegerRange.of(max(9, nextPossibleIndex[0]), bank.length - 3).contains(iv.idx1())).findFirst()),
+                extractIdx(nextPossibleIndex, usedIndex, bankWithIdx.stream()
+                        .filter(iv -> !usedIndex.contains(iv.idx1()))
+                        .filter(iv -> IntegerRange.of(max(10, nextPossibleIndex[0]), bank.length - 2).contains(iv.idx1())).findFirst()),
+                extractIdx(nextPossibleIndex, usedIndex, bankWithIdx.stream()
+                        .filter(iv -> !usedIndex.contains(iv.idx1()))
+                        .filter(iv -> IntegerRange.of(max(11, nextPossibleIndex[0]), bank.length - 1).contains(iv.idx1())).findFirst())
         );
 
     }
 
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-    private static int extractIdx(int[] nextPossibleIndex, Optional<IndexOfMax> index) {
+    private static int extractIdx(int[] nextPossibleIndex, List<Integer> usedIndex, Optional<IndexOfMax> index) {
         return index.map(iom -> {
-                    if (iom.idx1() > nextPossibleIndex[0]) nextPossibleIndex[0] = iom.idx1() + 1;
+                    if (iom.idx1() >= nextPossibleIndex[0]) {
+                        nextPossibleIndex[0] = iom.idx1() + 1;
+                        usedIndex.add(iom.idx1());
+                    }
                     return iom;
                 })
                 .map(IndexOfMax::idx1)
