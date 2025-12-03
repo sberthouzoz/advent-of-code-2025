@@ -9,6 +9,10 @@ public class Three {
         return bank.chars().map(c -> Character.digit(c, 10)).toArray();
     }
 
+    static int maxOfBank(int[] bank, IndexOfMax indexes) {
+        return bank[indexes.idx1()] * 10 + bank[indexes.idx2()];
+    }
+
     static IndexOfMax getIndexOfMax(int[] bank) {
         var bankWithIdx = IntStream.range(0, bank.length)
                 .mapToObj(i -> new IndexOfMax(i, bank[i]))
