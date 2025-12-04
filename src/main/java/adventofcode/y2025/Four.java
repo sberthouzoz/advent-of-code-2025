@@ -33,11 +33,12 @@ public class Four {
         System.out.println("duration = " + Duration.between(start, end));
         System.out.println("nbAccessibleRoll = " + nbAccessibleRoll);
         System.out.println("------- Part 2--------");
+        result.removeAccessible();
         start = Instant.now();
         var removable = result.nbRemovable();
         end = Instant.now();
         System.out.println("duration = " + Duration.between(start, end));
-        System.out.println("removable + nbAccessibleRoll = " + removable + nbAccessibleRoll);
+        System.out.printf("removable + nbAccessibleRoll = %d%n%n", removable + nbAccessibleRoll);
 
     }
 
