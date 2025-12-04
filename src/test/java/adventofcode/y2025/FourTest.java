@@ -36,7 +36,7 @@ class FourTest {
     void example() {
         testee.setLineSize(10);
 
-        var result = testee.nbAccessibleRoll(Four.FEWER_THAN_ADJACENT_ROLL);
+        var result = testee.nbAccessibleRoll();
 
         assertThat(result).isEqualTo(13);
     }
@@ -44,11 +44,11 @@ class FourTest {
     // part 2
     @Test
     void removing() {
-        var removable = testee.nbAccessibleRoll(Four.FEWER_THAN_ADJACENT_ROLL);
+        var removable = testee.nbAccessibleRoll();
         assertThat(removable).isEqualTo(13);
 
         testee.removeAccessible();
-        removable = testee.nbAccessibleRoll(Four.FEWER_THAN_ADJACENT_ROLL);
+        removable = testee.nbAccessibleRoll();
         assertThat(removable).isEqualTo(12);
     }
 

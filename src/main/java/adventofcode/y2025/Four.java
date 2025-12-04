@@ -27,12 +27,18 @@ public class Four {
         var inputPath = Path.of(args[0]);
         var result = Four.parse(Files.lines(inputPath));
         var start = Instant.now();
-        int nbAccessibleRoll = result.nbAccessibleRoll(Integer.parseInt(args[1]));
+        int nbAccessibleRoll = result.nbAccessibleRoll();
         var end = Instant.now();
-        System.out.println("duration = " + Duration.between(start, end));
         System.out.println("result = " + result);
+        System.out.println("duration = " + Duration.between(start, end));
         System.out.println("nbAccessibleRoll = " + nbAccessibleRoll);
         System.out.println("------- Part 2--------");
+        start = Instant.now();
+        var removable = result.nbRemovable();
+        end = Instant.now();
+        System.out.println("duration = " + Duration.between(start, end));
+        System.out.println("removable + nbAccessibleRoll = " + removable + nbAccessibleRoll);
+
     }
 
     public static Four parse(Stream<String> lines) {
@@ -48,11 +54,11 @@ public class Four {
         }).collect(Four::new, (f, bs) -> f.getInput().add(bs), (a, b) -> a.getInput().addAll(b.getInput()));
     }
 
-    int nbAccessibleRoll(int fewerThanAdjacentRoll) {
+    int nbAccessibleRoll() {
         for (int row = 0; row < getInput().size(); row++) {
             for (int col = 0; col < getLineSize(); col++) {
                 if (input.get(row).get(col)) {
-                    if (nbAdjacentRoll(row, col) < fewerThanAdjacentRoll) {
+                    if (nbAdjacentRoll(row, col) < Four.FEWER_THAN_ADJACENT_ROLL) {
                         toRemove.add(new Position(row, col));
                     }
                 }
@@ -91,7 +97,7 @@ public class Four {
 
     public int nbRemovable() {
         var sum = 0;
-        for (var nbAccessibleRoll = nbAccessibleRoll(FEWER_THAN_ADJACENT_ROLL); nbAccessibleRoll > 0; nbAccessibleRoll = nbAccessibleRoll(FEWER_THAN_ADJACENT_ROLL)) {
+        for (var nbAccessibleRoll = nbAccessibleRoll(); nbAccessibleRoll > 0; nbAccessibleRoll = nbAccessibleRoll()) {
             removeAccessible();
             sum += nbAccessibleRoll;
         }
@@ -117,6 +123,7 @@ public class Four {
     public String toString() {
         return new ToStringBuilder(this)
                 .append("lineSize", lineSize)
+                .append("toRemove", toRemove)
                 .toString();
     }
 
