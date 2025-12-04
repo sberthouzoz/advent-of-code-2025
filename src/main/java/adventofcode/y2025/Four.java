@@ -26,18 +26,12 @@ public class Four {
         System.out.println("-------Part 1-------------");
         var inputPath = Path.of(args[0]);
         var result = Four.parse(Files.lines(inputPath));
-        var start = Instant.now();
-        int nbAccessibleRoll = result.nbAccessibleRoll();
-        var end = Instant.now();
-        System.out.println("result = " + result);
-        System.out.println("duration = " + Duration.between(start, end));
-        System.out.println("nbAccessibleRoll = " + nbAccessibleRoll);
         System.out.println("------- Part 2--------");
-        start = Instant.now();
+        var start = Instant.now();
         var removable = result.nbRemovable();
-        end = Instant.now();
+        var end = Instant.now();
         System.out.println("duration = " + Duration.between(start, end));
-        System.out.println("removable + nbAccessibleRoll = " + removable + nbAccessibleRoll);
+        System.out.println("removable = " + removable);
 
     }
 
