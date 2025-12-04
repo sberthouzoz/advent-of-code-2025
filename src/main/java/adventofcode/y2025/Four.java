@@ -16,6 +16,7 @@ import java.util.stream.Stream;
 
 public class Four {
     private final List<FluentBitSet> input = new ArrayList<>();
+    private List<Position> toRemove = new ArrayList<>();
     private static final FluentBitSet EMPTY_BS = new FluentBitSet(0);
 
     private int lineSize;
@@ -45,15 +46,16 @@ public class Four {
     }
 
     int nbAccessibleRoll(int fewerThanAdjacentRoll) {
-        var sum = 0;
         for (int row = 0; row < getInput().size(); row++) {
             for (int col = 0; col < getLineSize(); col++) {
                 if (input.get(row).get(col)) {
-                    if (nbAdjacentRoll(row, col) < fewerThanAdjacentRoll) sum++;
+                    if (nbAdjacentRoll(row, col) < fewerThanAdjacentRoll) {
+                        toRemove.add(new Position(row, col));
+                    }
                 }
             }
         }
-        return sum;
+        return toRemove.size();
     }
 
     int nbAdjacentRoll(int rowIndex, int colIndex) {
@@ -99,5 +101,8 @@ public class Four {
         return new ToStringBuilder(this)
                 .append("lineSize", lineSize)
                 .toString();
+    }
+
+    record Position(int row, int col) {
     }
 }
