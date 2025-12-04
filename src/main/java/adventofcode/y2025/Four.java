@@ -1,21 +1,28 @@
 package adventofcode.y2025;
 
-public class Four {
-    private final boolean[][] input;
+import org.apache.commons.lang3.util.FluentBitSet;
 
-    public Four(int nbRows, int nbCols) {
-        input = new boolean[nbRows][nbCols];
-    }
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.IntStream;
+
+public class Four {
+    private final List<FluentBitSet> input = new ArrayList<>();
 
     public static Four parse(String input) {
-        final int[] len = {0};
-        var nbLines = input.lines().parallel().peek(s -> {
-            if (len[0] == 0) len[0] = s.length();
-        }).count();
-        return new Four((int) nbLines, len[0]);
+        return input.lines().map(s -> {
+            var bs = new FluentBitSet(s.length());
+            IntStream.range(0, s.length()).forEachOrdered(i -> {
+                switch (s.charAt(i)) {
+                    case '.' -> bs.clear(i);
+                    case '@' -> bs.set(i);
+                }
+            });
+            return bs;
+        }).collect(Four::new, (f, bs) -> f.getInput().add(bs), (a, b) -> a.getInput().addAll(b.getInput()));
     }
 
-    public boolean[][] getInput() {
+    public List<FluentBitSet> getInput() {
         return input;
     }
 }

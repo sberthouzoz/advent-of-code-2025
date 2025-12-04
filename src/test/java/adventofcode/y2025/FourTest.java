@@ -1,7 +1,8 @@
 package adventofcode.y2025;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 class FourTest {
     private final String EXAMPLE = """
@@ -18,7 +19,10 @@ class FourTest {
 
     @Test
     void parse() {
+        final var size = 10;
         var result = Four.parse(EXAMPLE);
-        Assertions.assertThat(result.getInput()).hasDimensions(10, 10);
+        assertThat(result.getInput()).as("should have %d rows", size).hasSize(10);
+        assertThat(result.getInput().getLast().isEmpty()).isFalse();
+        assertThat(result.getInput().getLast().cardinality()).as("should have %d rolls on the last line", 6).isEqualTo(6);
     }
 }
