@@ -15,6 +15,7 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public class Four {
+    static final int FEWER_THAN_ADJACENT_ROLL = 4;
     private final List<FluentBitSet> input = new ArrayList<>();
     private List<Position> toRemove = new ArrayList<>();
     private static final FluentBitSet EMPTY_BS = new FluentBitSet(0);
@@ -79,6 +80,11 @@ public class Four {
             bs.set(7, lineDown.get(colIndex + 1));
         }
         return bs.cardinality();
+    }
+
+    public void removeAccessible() {
+        toRemove.stream().parallel().forEach(pos -> input.get(pos.row()).clear(pos.col()));
+        toRemove.clear();
     }
 
     public List<FluentBitSet> getInput() {
