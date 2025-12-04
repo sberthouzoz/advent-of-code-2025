@@ -17,7 +17,7 @@ import java.util.stream.Stream;
 public class Four {
     static final int FEWER_THAN_ADJACENT_ROLL = 4;
     private final List<FluentBitSet> input = new ArrayList<>();
-    private List<Position> toRemove = new ArrayList<>();
+    private final List<Position> toRemove = new ArrayList<>();
     private static final FluentBitSet EMPTY_BS = new FluentBitSet(0);
 
     private int lineSize;

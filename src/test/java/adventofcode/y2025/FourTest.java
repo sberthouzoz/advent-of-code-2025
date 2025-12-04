@@ -10,19 +10,19 @@ class FourTest {
 
     @BeforeEach
     void setup() {
-        testee = Four.parse(EXAMPLE.lines());
+        var example = """
+                ..@@.@@@@.
+                @@@.@.@.@@
+                @@@@@.@.@@
+                @.@@@@..@.
+                @@.@@@@.@@
+                .@@@@@@@.@
+                .@.@.@.@@@
+                @.@@@.@@@@
+                .@@@@@@@@.
+                @.@.@@@.@.""";
+        testee = Four.parse(example.lines());
     }
-    private final String EXAMPLE = """
-            ..@@.@@@@.
-            @@@.@.@.@@
-            @@@@@.@.@@
-            @.@@@@..@.
-            @@.@@@@.@@
-            .@@@@@@@.@
-            .@.@.@.@@@
-            @.@@@.@@@@
-            .@@@@@@@@.
-            @.@.@@@.@.""";
 
     @Test
     void parse() {
