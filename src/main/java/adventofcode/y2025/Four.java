@@ -23,6 +23,7 @@ public class Four {
     private int lineSize;
 
     public static void main(String[] args) throws IOException {
+        System.out.println("-------Part 1-------------");
         var inputPath = Path.of(args[0]);
         var result = Four.parse(Files.lines(inputPath));
         var start = Instant.now();
@@ -31,6 +32,7 @@ public class Four {
         System.out.println("duration = " + Duration.between(start, end));
         System.out.println("result = " + result);
         System.out.println("nbAccessibleRoll = " + nbAccessibleRoll);
+        System.out.println("------- Part 2--------");
     }
 
     public static Four parse(Stream<String> lines) {
@@ -85,6 +87,15 @@ public class Four {
     public void removeAccessible() {
         toRemove.stream().parallel().forEach(pos -> input.get(pos.row()).clear(pos.col()));
         toRemove.clear();
+    }
+
+    public int nbRemovable() {
+        var sum = 0;
+        for (var nbAccessibleRoll = nbAccessibleRoll(FEWER_THAN_ADJACENT_ROLL); nbAccessibleRoll > 0; nbAccessibleRoll = nbAccessibleRoll(FEWER_THAN_ADJACENT_ROLL)) {
+            removeAccessible();
+            sum += nbAccessibleRoll;
+        }
+        return sum;
     }
 
     public List<FluentBitSet> getInput() {
