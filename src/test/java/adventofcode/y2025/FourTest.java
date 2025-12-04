@@ -25,4 +25,14 @@ class FourTest {
         assertThat(result.getInput().getLast().isEmpty()).isFalse();
         assertThat(result.getInput().getLast().cardinality()).as("should have %d rolls on the last line", 6).isEqualTo(6);
     }
+
+    @Test
+    void example() {
+        var input = Four.parse(EXAMPLE);
+        input.setLineSize(10);
+
+        var result = input.nbAccessibleRoll(4);
+
+        assertThat(result).isEqualTo(13);
+    }
 }
