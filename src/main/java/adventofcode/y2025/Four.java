@@ -1,11 +1,18 @@
 package adventofcode.y2025;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.util.FluentBitSet;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 public class Four {
     private final List<FluentBitSet> input = new ArrayList<>();
@@ -13,8 +20,19 @@ public class Four {
 
     private int lineSize;
 
-    public static Four parse(String input) {
-        return input.lines().map(s -> {
+    public static void main(String[] args) throws IOException {
+        var inputPath = Path.of(args[0]);
+        var result = Four.parse(Files.lines(inputPath));
+        var start = Instant.now();
+        int nbAccessibleRoll = result.nbAccessibleRoll(Integer.parseInt(args[1]));
+        var end = Instant.now();
+        System.out.println("duration = " + Duration.between(start, end));
+        System.out.println("result = " + result);
+        System.out.println("nbAccessibleRoll = " + nbAccessibleRoll);
+    }
+
+    public static Four parse(Stream<String> lines) {
+        return lines.map(s -> {
             var bs = new FluentBitSet(s.length());
             IntStream.range(0, s.length()).forEachOrdered(i -> {
                 switch (s.charAt(i)) {
@@ -67,12 +85,19 @@ public class Four {
 
     public int getLineSize() {
         if (lineSize == 0) {
-            lineSize = input.stream().mapToInt(FluentBitSet::cardinality).max().orElse(0);
+            lineSize = input.stream().mapToInt(FluentBitSet::length).max().orElse(0);
         }
         return lineSize;
     }
 
     public void setLineSize(int lineSize) {
         this.lineSize = lineSize;
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this)
+                .append("lineSize", lineSize)
+                .toString();
     }
 }
