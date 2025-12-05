@@ -60,4 +60,16 @@ class FiveTest {
     void example_part1() {
         assertThat(testee.nbFresh()).isEqualTo(3);
     }
+
+    @Test
+    void rangeTest() {
+        var range = LongRange.of(10, 14);
+        var size = range.getMaximum() - range.getMinimum() + 1;
+        assertThat(size).isEqualTo(5);
+    }
+
+    @Test
+    void example_part2() {
+        assertThat(testee.nbPossiblyFresh()).isEqualTo(14);
+    }
 }

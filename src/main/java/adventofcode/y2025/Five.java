@@ -2,16 +2,14 @@ package adventofcode.y2025;
 
 import org.apache.commons.lang3.LongRange;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.roaringbitmap.longlong.Roaring64NavigableMap;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Stream;
 
 public class Five {
@@ -26,11 +24,14 @@ public class Five {
         var end = Instant.now();
         System.out.println("Duration = " + Duration.between(start, end));
         System.out.println("result = " + result);
-    }
-
-    public Five(List<LongRange> freshIngredients, long[] availableIngredients) {
-        this.freshIngredients = freshIngredients;
-        this.availableIngredients = availableIngredients;
+        System.out.println("------Part Two------");
+        start = Instant.now();
+        result = db.nbPossiblyFresh();
+        end = Instant.now();
+        System.out.println("[part 2] Duration = " + Duration.between(start, end));
+        System.out.println("[part 2] result = " + result);
+        var lo = 561734110616332L;
+        var max = 137438952384L;
     }
 
     public static Five parse(Stream<String> database) {
@@ -50,7 +51,20 @@ public class Five {
                 availableIngredients.add(Long.parseLong(line));
             }
         });
+        freshIngredients.sort(Comparator.comparingLong(LongRange::getMinimum).thenComparingLong(LongRange::getMaximum));
         return new Five(freshIngredients, availableIngredients.stream().mapToLong(Long::longValue).toArray());
+    }
+
+    public Five(List<LongRange> freshIngredients, long[] availableIngredients) {
+        this.freshIngredients = freshIngredients;
+        this.availableIngredients = availableIngredients;
+    }
+
+    public long nbPossiblyFresh() {
+        var bs = new Roaring64NavigableMap(true);
+        var max = freshIngredients.stream().parallel().mapToLong(LongRange::getMaximum).max().orElseThrow();
+        return freshIngredients.parallelStream().flatMapToLong(LongRange::toLongStream).distinct().count();
+        //freshIngredients.forEach(r -> bs.addRange(r.getMinimum(), r.getMaximum()+1));
     }
 
     public long nbFresh() {
