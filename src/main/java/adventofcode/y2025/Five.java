@@ -19,8 +19,8 @@ public class Five {
     }
 
     public static Five parse(Stream<String> database) {
-        var availableIngredients = new ArrayList<Integer>();
-        var freshIngredients = new ArrayList<IntegerRange>();
+        var availableIngredients = Collections.synchronizedList(new ArrayList<Integer>());
+        var freshIngredients = Collections.synchronizedList(new ArrayList<IntegerRange>());
 
         database.parallel().forEach(line -> {
             if (line.contains("-")) {
@@ -36,6 +36,14 @@ public class Five {
             }
         });
         return new Five(freshIngredients, availableIngredients.stream().mapToInt(Integer::intValue).toArray());
+    }
+
+    public long nbFresh() {
+        return Arrays.stream(availableIngredients).parallel().filter(this::isFresh).count();
+    }
+
+    public boolean isFresh(int ingredientId) {
+        return freshIngredients.stream().anyMatch(range -> range.contains(ingredientId));
     }
 
     public List<IntegerRange> getFreshIngredients() {

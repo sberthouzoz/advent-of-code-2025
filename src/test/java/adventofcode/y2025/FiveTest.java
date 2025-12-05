@@ -3,8 +3,14 @@ package adventofcode.y2025;
 import org.apache.commons.lang3.IntegerRange;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.params.provider.Arguments.of;
 
 class FiveTest {
     private Five testee;
@@ -31,5 +37,27 @@ class FiveTest {
         assertThat(testee).isNotNull();
         assertThat(testee.getAvailableIngredients()).hasSize(6).containsExactlyInAnyOrder(1, 5, 8, 11, 17, 32);
         assertThat(testee.getFreshIngredients()).hasSize(4).contains(IntegerRange.of(3, 5), IntegerRange.of(10, 14), IntegerRange.of(16, 20), IntegerRange.of(12, 18));
+    }
+
+    public static Stream<Arguments> isFresh() {
+        return Stream.of(
+                of(1, false),
+                of(5, true),
+                of(8, false),
+                of(11, true),
+                of(17, true),
+                of(32, false)
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void isFresh(int ingredientId, boolean expected) {
+        assertThat(testee.isFresh(ingredientId)).isEqualTo(expected);
+    }
+
+    @Test
+    void example_part1() {
+        assertThat(testee.nbFresh()).isEqualTo(3);
     }
 }
