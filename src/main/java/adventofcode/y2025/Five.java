@@ -1,6 +1,6 @@
 package adventofcode.y2025;
 
-import org.apache.commons.lang3.IntegerRange;
+import org.apache.commons.lang3.LongRange;
 import org.apache.commons.lang3.math.NumberUtils;
 
 import java.util.ArrayList;
@@ -10,47 +10,47 @@ import java.util.List;
 import java.util.stream.Stream;
 
 public class Five {
-    private final List<IntegerRange> freshIngredients;
-    private final int[] availableIngredients;
+    private final List<LongRange> freshIngredients;
+    private final long[] availableIngredients;
 
-    public Five(List<IntegerRange> freshIngredients, int[] availableIngredients) {
+    public Five(List<LongRange> freshIngredients, long[] availableIngredients) {
         this.freshIngredients = freshIngredients;
         this.availableIngredients = availableIngredients;
     }
 
     public static Five parse(Stream<String> database) {
-        var availableIngredients = Collections.synchronizedList(new ArrayList<Integer>());
-        var freshIngredients = Collections.synchronizedList(new ArrayList<IntegerRange>());
+        var availableIngredients = Collections.synchronizedList(new ArrayList<Long>());
+        var freshIngredients = Collections.synchronizedList(new ArrayList<LongRange>());
 
         database.parallel().forEach(line -> {
             if (line.contains("-")) {
                 freshIngredients.add(
-                        IntegerRange.of(
-                                Integer.parseInt(line, 0, line.indexOf("-"), 10),
-                                Integer.parseInt(line, line.indexOf("-") + 1, line.length(), 10)
+                        LongRange.of(
+                                Long.parseLong(line, 0, line.indexOf("-"), 10),
+                                Long.parseLong(line, line.indexOf("-") + 1, line.length(), 10)
                         )
                 );
             }
             if (NumberUtils.isParsable(line)) {
-                availableIngredients.add(Integer.parseInt(line));
+                availableIngredients.add(Long.parseLong(line));
             }
         });
-        return new Five(freshIngredients, availableIngredients.stream().mapToInt(Integer::intValue).toArray());
+        return new Five(freshIngredients, availableIngredients.stream().mapToLong(Long::longValue).toArray());
     }
 
     public long nbFresh() {
         return Arrays.stream(availableIngredients).parallel().filter(this::isFresh).count();
     }
 
-    public boolean isFresh(int ingredientId) {
+    public boolean isFresh(long ingredientId) {
         return freshIngredients.stream().anyMatch(range -> range.contains(ingredientId));
     }
 
-    public List<IntegerRange> getFreshIngredients() {
+    public List<LongRange> getFreshIngredients() {
         return Collections.unmodifiableList(freshIngredients);
     }
 
-    public int[] getAvailableIngredients() {
+    public long[] getAvailableIngredients() {
         return Arrays.copyOf(availableIngredients, availableIngredients.length);
     }
 }

@@ -1,6 +1,6 @@
 package adventofcode.y2025;
 
-import org.apache.commons.lang3.IntegerRange;
+import org.apache.commons.lang3.LongRange;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -36,7 +36,7 @@ class FiveTest {
     void parse() {
         assertThat(testee).isNotNull();
         assertThat(testee.getAvailableIngredients()).hasSize(6).containsExactlyInAnyOrder(1, 5, 8, 11, 17, 32);
-        assertThat(testee.getFreshIngredients()).hasSize(4).contains(IntegerRange.of(3, 5), IntegerRange.of(10, 14), IntegerRange.of(16, 20), IntegerRange.of(12, 18));
+        assertThat(testee.getFreshIngredients()).hasSize(4).contains(LongRange.of(3, 5), LongRange.of(10, 14), LongRange.of(16, 20), LongRange.of(12, 18));
     }
 
     public static Stream<Arguments> isFresh() {
