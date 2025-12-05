@@ -3,6 +3,11 @@ package adventofcode.y2025;
 import org.apache.commons.lang3.LongRange;
 import org.apache.commons.lang3.math.NumberUtils;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -12,6 +17,16 @@ import java.util.stream.Stream;
 public class Five {
     private final List<LongRange> freshIngredients;
     private final long[] availableIngredients;
+
+    public static void main(String[] args) throws IOException {
+        var inputFile = Path.of(args[0]);
+        var db = Five.parse(Files.lines(inputFile));
+        var start = Instant.now();
+        var result = db.nbFresh();
+        var end = Instant.now();
+        System.out.println("Duration = " + Duration.between(start, end));
+        System.out.println("result = " + result);
+    }
 
     public Five(List<LongRange> freshIngredients, long[] availableIngredients) {
         this.freshIngredients = freshIngredients;
