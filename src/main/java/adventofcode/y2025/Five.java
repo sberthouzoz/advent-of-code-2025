@@ -2,7 +2,6 @@ package adventofcode.y2025;
 
 import org.apache.commons.lang3.LongRange;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.roaringbitmap.longlong.Roaring64NavigableMap;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -10,6 +9,7 @@ import java.nio.file.Path;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public class Five {
@@ -65,7 +65,6 @@ public class Five {
     }
 
     public long nbPossiblyFresh() {
-        var bs = new Roaring64NavigableMap(true);
         var max = freshIngredients.stream().parallel().mapToLong(LongRange::getMaximum).max().orElseThrow();
         var min = freshIngredients.stream().parallel().mapToLong(LongRange::getMinimum).min().orElseThrow();
         System.out.println("min = " + min);
@@ -80,14 +79,21 @@ public class Five {
         while (i < freshIngredients.size()) {
             var nextNonOverlapOrAdjacent = nextNonOverlapOrAdjacent(i);
             if (i + 1 != nextNonOverlapOrAdjacent) {
-                reduced.add(LongRange.of(freshIngredients.get(i).getMinimum(), freshIngredients.get(nextNonOverlapOrAdjacent).getMaximum()));
-                i = nextNonOverlapOrAdjacent + 1;
+                if (nextNonOverlapOrAdjacent == freshIngredients.size() - 1) nextNonOverlapOrAdjacent++;
+                reduced.add(LongRange.of(
+                        (long) freshIngredients.get(i).getMinimum(),
+                        freshIngredients.subList(i, nextNonOverlapOrAdjacent).stream().mapToLong(LongRange::getMaximum).max().orElseThrow()));
+                i = nextNonOverlapOrAdjacent;
             } else {
                 reduced.add(freshIngredients.get(i));
                 i++;
             }
         }
         freshIngredients = reduced;
+        if (IntStream.range(1, freshIngredients.size()).parallel().anyMatch(idx -> isOverlapOrAdjacent(freshIngredients.get(idx - 1), freshIngredients.get(idx)))) {
+            System.out.println("### reducing again;");
+            reduceFreshIngredients();
+        }
     }
 
     public long nbFresh() {
