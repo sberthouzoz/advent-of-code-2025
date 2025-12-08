@@ -5,6 +5,8 @@ import org.apache.commons.lang3.StringUtils;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.LongBinaryOperator;
@@ -20,7 +22,10 @@ public class Six {
     public static void main(String[] args) throws IOException {
         var file = Path.of(args[0]);
         var obj = Six.parse(file);
+        var start = Instant.now();
         obj.partOne(file);
+        var end = Instant.now();
+        System.out.println("Duration = " + Duration.between(start, end));
         System.out.println("obj.summingResults() = " + obj.summingResults());
     }
 
