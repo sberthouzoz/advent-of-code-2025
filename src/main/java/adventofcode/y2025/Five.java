@@ -10,10 +10,11 @@ import java.nio.file.Path;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
+import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
 public class Five {
-    private final List<LongRange> freshIngredients;
+    private List<LongRange> freshIngredients;
     private final long[] availableIngredients;
 
     public static void main(String[] args) throws IOException {
@@ -60,11 +61,40 @@ public class Five {
         this.availableIngredients = availableIngredients;
     }
 
+    private static boolean isOverlapOrAdjacent(LongRange rangeBefore, LongRange rangeAfter) {
+        if (rangeBefore.isAfterRange(rangeAfter))
+            throw new IllegalArgumentException("rangeBefore (%s) must be before rangeAfter: %s".formatted(rangeBefore, rangeAfter));
+        return rangeBefore.isOverlappedBy(rangeAfter) || rangeBefore.getMaximum() + 1 == rangeAfter.getMinimum();
+    }
+
     public long nbPossiblyFresh() {
         var bs = new Roaring64NavigableMap(true);
         var max = freshIngredients.stream().parallel().mapToLong(LongRange::getMaximum).max().orElseThrow();
-        return freshIngredients.parallelStream().flatMapToLong(LongRange::toLongStream).distinct().count();
-        //freshIngredients.forEach(r -> bs.addRange(r.getMinimum(), r.getMaximum()+1));
+        var min = freshIngredients.stream().parallel().mapToLong(LongRange::getMinimum).min().orElseThrow();
+        System.out.println("min = " + min);
+        System.out.println("max = " + max);
+        var res = LongStream.rangeClosed(min, max).parallel().filter(n -> freshIngredients.parallelStream().anyMatch(r -> r.contains(n))).count();
+        var min2 = 447_008_091_749L;
+        var test = 561_734_110_616_331L;
+        var diff = 561_287_102_524_582L;
+        reduceFreshIngredients();
+        return freshIngredients.stream().mapToLong(r -> r.getMaximum() - r.getMinimum() + 1).sum();
+    }
+
+    private void reduceFreshIngredients() {
+        var reduced = new ArrayList<LongRange>();
+        var i = 0;
+        while (i < freshIngredients.size()) {
+            var nextNonOverlapOrAdjacent = nextNonOverlapOrAdjacent(i);
+            if (i + 1 != nextNonOverlapOrAdjacent) {
+                reduced.add(LongRange.of(freshIngredients.get(i).getMinimum(), freshIngredients.get(nextNonOverlapOrAdjacent).getMaximum()));
+                i = nextNonOverlapOrAdjacent + 1;
+            } else {
+                reduced.add(freshIngredients.get(i));
+                i++;
+            }
+        }
+        freshIngredients = reduced;
     }
 
     public long nbFresh() {
@@ -81,5 +111,15 @@ public class Five {
 
     public long[] getAvailableIngredients() {
         return Arrays.copyOf(availableIngredients, availableIngredients.length);
+    }
+
+    private int nextNonOverlapOrAdjacent(int currentIndex) {
+        var startRange = freshIngredients.get(currentIndex);
+        for (int i = currentIndex; i < freshIngredients.size(); i++) {
+            if (!isOverlapOrAdjacent(startRange, freshIngredients.get(i))) {
+                return i;
+            }
+        }
+        return currentIndex;
     }
 }
