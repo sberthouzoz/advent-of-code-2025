@@ -10,8 +10,8 @@ import java.util.stream.IntStream;
 
 public class Six {
     private static final String OPERATOR_CHARS = "+*";
-    private List<Long> results;
-    private List<Operator> operators;
+    private final List<Long> results;
+    private final List<Operator> operators;
 
     public Six(List<Operator> operators, List<Long> longs) {
         this.operators = operators;
@@ -40,16 +40,16 @@ public class Six {
         return results.parallelStream().mapToLong(Long::longValue).sum();
     }
 
-    enum Operator {
+    public enum Operator {
         PLUS("+", Long::sum), MULT("*", (a, b) -> a * b);
-        private static Map<String, Operator> ofChar;
+        private static final Map<String, Operator> ofChar;
 
         static {
             ofChar = Arrays.stream(Operator.values()).collect(Collectors.toMap(op -> op.c, Function.identity()));
         }
 
-        private String c;
-        private LongBinaryOperator op;
+        private final String c;
+        private final LongBinaryOperator op;
 
         Operator(String character, LongBinaryOperator op) {
             c = character;
