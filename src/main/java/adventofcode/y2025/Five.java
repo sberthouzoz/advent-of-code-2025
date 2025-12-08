@@ -10,7 +10,6 @@ import java.nio.file.Path;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
-import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
 public class Five {
@@ -31,8 +30,6 @@ public class Five {
         end = Instant.now();
         System.out.println("[part 2] Duration = " + Duration.between(start, end));
         System.out.println("[part 2] result = " + result);
-        var lo = 561734110616332L;
-        var max = 137438952384L;
     }
 
     public static Five parse(Stream<String> database) {
@@ -73,10 +70,6 @@ public class Five {
         var min = freshIngredients.stream().parallel().mapToLong(LongRange::getMinimum).min().orElseThrow();
         System.out.println("min = " + min);
         System.out.println("max = " + max);
-        var res = LongStream.rangeClosed(min, max).parallel().filter(n -> freshIngredients.parallelStream().anyMatch(r -> r.contains(n))).count();
-        var min2 = 447_008_091_749L;
-        var test = 561_734_110_616_331L;
-        var diff = 561_287_102_524_582L;
         reduceFreshIngredients();
         return freshIngredients.stream().mapToLong(r -> r.getMaximum() - r.getMinimum() + 1).sum();
     }
