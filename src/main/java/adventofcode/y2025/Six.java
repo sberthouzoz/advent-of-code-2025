@@ -41,7 +41,7 @@ public class Six {
     }
 
     private static List<OperatorPos> parseOperatorsLine(String lineOper) {
-        return IntStream.range(0, lineOper.length()).parallel()
+        return IntStream.range(0, lineOper.length())
                 .filter(idx -> StringUtils.containsAny(lineOper.substring(idx, idx + 1), OPERATOR_CHARS))
                 .mapToObj(idx -> new OperatorPos(Operator.valueOfChar(lineOper.charAt(idx)), idx))
                 .toList();
@@ -60,29 +60,11 @@ public class Six {
         partOne(firstLine, input.lines());
     }
 
-    static int getDigitAt(int n, int posPowerOfTen) {
-        var pow = powerOfTenAsInt(posPowerOfTen);
-        return n / pow % 10;
-    }
-
     public void partOne(Path input) throws IOException {
         try (var lines = Files.lines(input)) {
             var firstLine = lines.findFirst().orElseThrow();
             partOne(firstLine, Files.lines(input));
         }
-    }
-
-    public long summingResults() {
-        return results.parallelStream().mapToLong(Long::longValue).sum();
-    }
-
-    static int setDigitAt(int n, int posPowerOfTen) {
-        var pow = powerOfTenAsInt(posPowerOfTen);
-        return n * pow;
-    }
-
-    private static int powerOfTenAsInt(int posPowerOfTen) {
-        return (int) Math.pow(10, posPowerOfTen);
     }
 
     private void partOne(String firstLine, Stream<String> lines) {
@@ -94,6 +76,31 @@ public class Six {
                     var splitted = StringUtils.split(line);
                     IntStream.range(0, splitted.length).forEach(idx -> results.set(idx, operators.get(idx).operator().oper(results.get(idx), Long.parseLong(splitted[idx]))));
                 });
+    }
+
+    static int getDigitAt(int n, int posPowerOfTen) {
+        var pow = powerOfTenAsInt(posPowerOfTen);
+        return n / pow % 10;
+    }
+
+    static int setDigitAt(int n, int posPowerOfTen) {
+        var pow = powerOfTenAsInt(posPowerOfTen);
+        return n * pow;
+    }
+
+    private static int powerOfTenAsInt(int posPowerOfTen) {
+        return (int) Math.pow(10, posPowerOfTen);
+    }
+
+    public void partTwo(String input) {
+        var lines = input.lines().filter(line -> StringUtils.containsNone(OPERATOR_CHARS)).toList();
+        for (int i = 0; i < operators.size(); i++) {
+            results.add(operators.get(i).operator().noOp);
+        }
+    }
+
+    public long summingResults() {
+        return results.parallelStream().mapToLong(Long::longValue).sum();
     }
 
     public enum Operator {
