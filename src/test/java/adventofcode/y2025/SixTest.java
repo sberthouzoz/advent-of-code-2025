@@ -36,6 +36,14 @@ class SixTest {
     }
 
     @Test
+    void partTwo() {
+        testee.partTwo(EXAMPLE);
+        var res = testee.summingResults();
+        System.out.println("res = " + res);
+        assertThat(res).isPositive();
+    }
+
+    @Test
     void getDigitAt() {
         assertThat(Six.getDigitAt(652, 0)).isEqualTo(2);
         assertThat(Six.getDigitAt(652, 1)).isEqualTo(5);

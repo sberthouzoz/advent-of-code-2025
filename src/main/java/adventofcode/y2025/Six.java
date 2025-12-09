@@ -93,17 +93,35 @@ public class Six {
     }
 
     public void partTwo(String input) {
-        var lines = input.lines().filter(line -> StringUtils.containsNone(OPERATOR_CHARS)).toList();
+        var lines = input.lines().filter(line -> StringUtils.containsNone(line, OPERATOR_CHARS)).toList();
+        List<List<String>> parsedInput = new ArrayList<>(operators.size());
         for (var opPos : operators) {
             results.add(opPos.operator().noOp);
+            parsedInput.add(new ArrayList<>());
         }
         for (var line : lines) {
             for (int i = 0; i < operators.size(); i++) {
                 var opPos = operators.get(i);
-                var digitPos = (i == operators.size() - 1) ? line.length() - 1 : operators.get(i + 1).position() - opPos.position();
-                var len = opPos.position() - digitPos + 1;
-
+                var lastDigitPos = (i == operators.size() - 1) ? line.length() : operators.get(i + 1).position() - 1;
+                parsedInput.get(i).add(line.substring(opPos.position(),lastDigitPos));
             }
+        }
+        System.out.println("parsedInput = " + parsedInput);
+        for (var i=0;i<operators.size();i++) {
+            var numLen = parsedInput.get(i).getFirst().length();
+            var op = operators.get(i).operator();
+            var col = parsedInput.get(i);
+            var n = 0;
+            for (int j=0;j<col.size();j++) {
+                var row = col.get(j);
+                for (int k=0;k<numLen;k++) {
+                    var c = row.charAt(k);
+                    if (c != ' ') {
+                        n += setDigitAt(Character.digit(c, 10),k);
+                    }
+                }
+            }
+            results.set(i,op.oper(results.get(i),n));
         }
     }
 
