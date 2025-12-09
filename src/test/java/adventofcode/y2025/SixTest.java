@@ -1,8 +1,9 @@
 package adventofcode.y2025;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 class SixTest {
     private static final String EXAMPLE = """
@@ -23,6 +24,21 @@ class SixTest {
 
         var res = testee.summingResults();
 
-        Assertions.assertThat(res).isEqualTo(4277556);
+        assertThat(res).isEqualTo(4277556);
+    }
+
+    @Test
+    void getDigitAt() {
+        assertThat(Six.getDigitAt(652, 0)).isEqualTo(2);
+        assertThat(Six.getDigitAt(652, 1)).isEqualTo(5);
+        assertThat(Six.getDigitAt(652, 2)).isEqualTo(6);
+        assertThat(Six.getDigitAt(652, 3)).isEqualTo(0);
+    }
+
+    @Test
+    void setDigitAt() {
+        assertThat(Six.setDigitAt(1, 2)).isEqualTo(100);
+        assertThat(Six.setDigitAt(2, 1)).isEqualTo(20);
+        assertThat(Six.setDigitAt(3, 0)).isEqualTo(3);
     }
 }
