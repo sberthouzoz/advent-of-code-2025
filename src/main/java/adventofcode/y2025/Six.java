@@ -94,8 +94,16 @@ public class Six {
 
     public void partTwo(String input) {
         var lines = input.lines().filter(line -> StringUtils.containsNone(OPERATOR_CHARS)).toList();
-        for (int i = 0; i < operators.size(); i++) {
-            results.add(operators.get(i).operator().noOp);
+        for (var opPos : operators) {
+            results.add(opPos.operator().noOp);
+        }
+        for (var line : lines) {
+            for (int i = 0; i < operators.size(); i++) {
+                var opPos = operators.get(i);
+                var digitPos = (i == operators.size() - 1) ? line.length() - 1 : operators.get(i + 1).position() - opPos.position();
+                var len = opPos.position() - digitPos + 1;
+
+            }
         }
     }
 
