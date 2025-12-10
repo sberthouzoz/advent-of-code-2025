@@ -5,6 +5,9 @@ import org.jspecify.annotations.NonNull;
 import java.util.*;
 import java.util.stream.Stream;
 
+import static java.util.Comparator.comparing;
+import static java.util.Comparator.reverseOrder;
+
 public class Eight {
     private final List<Point3D> input;
     private final List<Point3DPairWithDistance> pairsWithDistance = new ArrayList<>();
@@ -43,19 +46,21 @@ public class Eight {
 
 record Point3D(int x, int y, int z) implements Comparable<Point3D> {
     public static final Point3D ORIGIN = new Point3D(0, 0, 0);
+    private static final Comparator<Point3D> COMPARATOR = Comparator.comparingDouble(p3d -> p3d.distanceTo(ORIGIN));
 
+    Point3D(Point3D fromPoint) {
+        this(fromPoint.x(), fromPoint.y(), fromPoint.z());
+    }
     @Override
     public int compareTo(@NonNull Point3D o) {
         return COMPARATOR.compare(this, o);
-    }    private static final Comparator<Point3D> COMPARATOR = Comparator.comparingDouble(p3d -> p3d.distanceTo(ORIGIN));
+    }
 
     public double distanceTo(Point3D other) {
         if (this.equals(other)) {
             return 0;
         }
-        var min = (other.equals(ORIGIN) || this.compareTo(other) <= 0) ? this : other;
-        var max = (this == min) ? other : this;
-        return Math.sqrt(Math.pow(max.x - min.x, 2) + Math.pow(max.y * min.y, 2) + Math.pow(max.z - min.z, 2));
+        return Math.sqrt(Math.pow(other.x - this.x, 2) + Math.pow(other.y - this.y, 2) + Math.pow(other.z - this.z, 2));
     }
 
 
@@ -102,7 +107,6 @@ class CircuitSet {
     }
 
     public List<Set<Point3D>> getLargest(int limit) {
-        // TODO: reverse
-        return circuits.stream().sorted(Comparator.comparingInt(Set::size)).limit(3).toList();
+        return circuits.stream().sorted(comparing(Set::size, reverseOrder())).limit(limit).toList();
     }
 }

@@ -1,11 +1,13 @@
 package adventofcode.y2025;
 
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.within;
 
 class EightTest {
-    private String example = """
+    private final String example = """
             162,817,812
             57,618,57
             906,360,560
@@ -32,5 +34,29 @@ class EightTest {
         var result = Eight.partOne(example.lines(), 10);
 
         assertThat(result).isEqualTo(40);
+    }
+
+    @Nested
+    class Point3DTest {
+        private final Point3D point1 = new Point3D(984, 92, 344);
+        private final Point3D point2 = new Point3D(425, 690, 689);
+
+        @Test
+        void compareTo() {
+            assertThat(point1).isGreaterThan(Point3D.ORIGIN);
+            assertThat(point2).isGreaterThan(Point3D.ORIGIN);
+            assertThat(Point3D.ORIGIN).isLessThan(point1);
+            assertThat(Point3D.ORIGIN).isLessThan(point2);
+            assertThat(point1).isEqualByComparingTo(new Point3D(point1));
+            assertThat(point1).isLessThan(point2);
+        }
+
+        @Test
+        void distance() {
+            assertThat(Point3D.ORIGIN.distanceTo(Point3D.ORIGIN)).isZero();
+            var distance = point1.distanceTo(point2);
+            // expected result from https://www.calculatorsoup.com/calculators/geometry-solids/distance-two-points.php
+            assertThat(distance).isPositive().isCloseTo(888.318637, within(1E-6));
+        }
     }
 }
