@@ -31,12 +31,12 @@ public class Day07 {
     }
 
     static long part1(Map<Coord, Long> beamWays) {
-        return beamWays.values().stream().filter(v -> v == -1).count();
+        return beamWays.values().parallelStream().filter(v -> v == -1).count();
     }
 
     static long part2(Map<Coord, Long> beamWays) {
-        int lastRow = beamWays.keySet().stream().mapToInt(Coord::y).max().orElseThrow();
-        return beamWays.entrySet().stream().filter(e -> e.getKey().y == lastRow).mapToLong(Map.Entry::getValue).sum();
+        int lastRow = beamWays.keySet().parallelStream().mapToInt(Coord::y).max().orElseThrow();
+        return beamWays.entrySet().parallelStream().filter(e -> e.getKey().y == lastRow).mapToLong(Map.Entry::getValue).sum();
     }
 
     static Map<Coord, Long> creatPathMap(List<String> input) {
