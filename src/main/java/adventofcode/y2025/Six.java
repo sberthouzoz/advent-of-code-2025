@@ -88,20 +88,6 @@ public class Six {
                 });
     }
 
-    static int getDigitAt(int n, int posPowerOfTen) {
-        var pow = powerOfTenAsInt(posPowerOfTen);
-        return n / pow % 10;
-    }
-
-    static int setDigitAt(int n, int posPowerOfTen) {
-        var pow = powerOfTenAsInt(posPowerOfTen);
-        return n * pow;
-    }
-
-    private static int powerOfTenAsInt(int posPowerOfTen) {
-        return (int) Math.pow(10, posPowerOfTen);
-    }
-
     public void partTwo(String input) {
         var lines = input.lines().filter(line -> StringUtils.containsNone(line, OPERATOR_CHARS)).toList();
         List<List<String>> parsedInput = new ArrayList<>(operators.size());
