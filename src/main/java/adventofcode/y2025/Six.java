@@ -27,6 +27,16 @@ public class Six {
         var end = Instant.now();
         System.out.println("Duration = " + Duration.between(start, end));
         System.out.println("obj.summingResults() = " + obj.summingResults());
+        obj.clearResults();
+        start = Instant.now();
+        obj.partTwo(Files.readString(file));
+        end = Instant.now();
+        System.out.println("Duration = " + Duration.between(start, end));
+        System.out.println("obj.summingResults() = " + obj.summingResults());
+    }
+
+    private void clearResults() {
+        results.clear();
     }
 
     public Six(List<OperatorPos> operators, List<Long> longs) {
@@ -106,7 +116,6 @@ public class Six {
                 parsedInput.get(i).add(line.substring(opPos.position(),lastDigitPos));
             }
         }
-        System.out.println("parsedInput = " + parsedInput);
         for (var i=0;i<operators.size();i++) {
             var numLen = parsedInput.get(i).getFirst().length();
             var op = operators.get(i).operator();
