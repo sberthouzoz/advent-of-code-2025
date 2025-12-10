@@ -113,8 +113,7 @@ public class Six {
             var col = parsedInput.get(i);
             for (int j = 0; j < numLen; j++) {
                 var n = 0;
-                for (int k = 0; k < col.size(); k++) {
-                    var row = col.get(k);
+                for (var row : col) {
                     var c = row.charAt(j);
                     if (c != ' ') {
                         n = n * 10 + Character.digit(c, 10);
