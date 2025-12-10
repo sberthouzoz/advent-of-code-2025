@@ -111,17 +111,17 @@ public class Six {
             var numLen = parsedInput.get(i).getFirst().length();
             var op = operators.get(i).operator();
             var col = parsedInput.get(i);
-            var n = 0;
-            for (int j=0;j<col.size();j++) {
-                var row = col.get(j);
-                for (int k=0;k<numLen;k++) {
-                    var c = row.charAt(k);
+            for (int j = 0; j < numLen; j++) {
+                var n = 0;
+                for (int k = 0; k < col.size(); k++) {
+                    var row = col.get(k);
+                    var c = row.charAt(j);
                     if (c != ' ') {
-                        n += setDigitAt(Character.digit(c, 10),k);
+                        n = n * 10 + Character.digit(c, 10);
                     }
                 }
+                results.set(i, op.oper(results.get(i), n));
             }
-            results.set(i,op.oper(results.get(i),n));
         }
     }
 

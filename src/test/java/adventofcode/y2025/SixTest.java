@@ -1,6 +1,5 @@
 package adventofcode.y2025;
 
-import org.apache.commons.lang3.ArrayUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -12,18 +11,11 @@ class SixTest {
              45 64  387 23\s
               6 98  215 314
             *   +   *   + \s""";
-    private static final String OPERATOR_CHARS = "+*";
     private Six testee;
 
     @BeforeEach
     void setUp() {
         testee = Six.parse(EXAMPLE);
-    }
-
-    @Test
-    void temp() {
-
-        assertThat(ArrayUtils.indexOf(OPERATOR_CHARS.toCharArray(), "+  *  +".charAt(3))).isNotEqualTo(ArrayUtils.INDEX_NOT_FOUND);
     }
 
     @Test
@@ -40,7 +32,7 @@ class SixTest {
         testee.partTwo(EXAMPLE);
         var res = testee.summingResults();
         System.out.println("res = " + res);
-        assertThat(res).isPositive();
+        assertThat(res).isPositive().isEqualTo(3263827);
     }
 
     @Test
