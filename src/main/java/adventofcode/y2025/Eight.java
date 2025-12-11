@@ -149,8 +149,4 @@ class CircuitSet {
     public Point3DPairWithDistance getLastConnectedPair() {
         return lastConnectedPair;
     }
-
-    public int size() {
-        return circuits.size();
-    }
 }
