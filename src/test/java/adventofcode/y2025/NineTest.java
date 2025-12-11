@@ -26,6 +26,12 @@ class NineTest {
     }
 
     @Test
+    void partTwo() {
+        var result = Nine.partTwo(example.lines());
+        assertThat(result).isEqualTo(24);
+    }
+
+    @Test
     void playground() {
         var dist = point.distance(point2);
 

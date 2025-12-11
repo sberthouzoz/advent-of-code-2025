@@ -3,14 +3,17 @@ package adventofcode.y2025;
 import org.jspecify.annotations.NonNull;
 
 import java.awt.*;
+import java.awt.geom.Line2D;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Comparator;
+import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 public class Nine {
@@ -25,8 +28,12 @@ public class Nine {
         }
     }
     static Rectangle fromOppositeCorners(Point point1, Point point2) {
-        var rect = new Rectangle(new Point(Integer.min(point1.x, point2.x), Integer.min(point1.y, point2.y)));
-        rect.add(new Point(Integer.max(point1.x, point2.x) + 1, Integer.max(point1.y, point2.y) + 1));
+        var rect = new Rectangle(
+                Integer.min(point1.x, point2.x),
+                Integer.min(point1.y, point2.y),
+                Math.abs(point2.x - point1.x) + 1,
+                Math.abs(point2.y - point1.y) + 1);
+
         return rect;
     }
 
@@ -35,33 +42,84 @@ public class Nine {
     }
 
     static long partOne(Stream<String> lines) {
-        var sep = ',';
-        var radix_ten = 10;
-        SortedSet<PairWithDistance> pairs = new TreeSet<>();
-        var points = lines.map(line -> new Point(Integer.parseInt(line, 0, line.indexOf(sep), radix_ten),
-                        Integer.parseInt(line, line.indexOf(sep) + 1, line.length(), radix_ten)))
-                .toList();
+        var points = getRedTiles(lines);
+        SortedSet<PairWithRectangleArea> pairs = createPairs(points);
+        var largestRect = fromOppositeCorners(pairs.getLast().first(), pairs.getLast().second());
+        return getArea(largestRect);
+    }
+
+    private static @NonNull SortedSet<PairWithRectangleArea> createPairs(List<Point> points) {
+        SortedSet<PairWithRectangleArea> pairs = new TreeSet<>();
         for (int i = 0; i < points.size(); i++) {
             var point = points.get(i);
             for (int j = i + 1; j < points.size(); j++) {
                 var other = points.get(j);
-                pairs.add(new PairWithDistance(point, other));
+                pairs.add(new PairWithRectangleArea(point, other));
             }
         }
-        var largestRect = fromOppositeCorners(pairs.getLast().first(), pairs.getLast().second());
-        return getArea(largestRect);
+        return pairs;
     }
+
+    private static @NonNull List<Point> getRedTiles(Stream<String> lines) {
+        int radix_ten = 10;
+        char sep = ',';
+        return lines.map(line -> new Point(Integer.parseInt(line, 0, line.indexOf(sep), radix_ten),
+                        Integer.parseInt(line, line.indexOf(sep) + 1, line.length(), radix_ten)))
+                .toList();
+    }
+
+    static long partTwo(Stream<String> lines) {
+        var redTiles = getRedTiles(lines);
+        var filterArea = createFilteringArea(redTiles);
+        var pairs = createPairs(redTiles).reversed();
+        Predicate<PairWithRectangleArea> insideUsedArea = (PairWithRectangleArea pair) -> {
+            var rect = fromOppositeCorners(pair.first(), pair.second());
+            var containsUpLeft = containsOrOnBorder(filterArea, rect.x, rect.y);
+            var containsUpRight = containsOrOnBorder(filterArea, rect.getMaxX() - 1, rect.y);
+            var containsBottomLeft = containsOrOnBorder(filterArea, rect.x, rect.getMaxY() - 1);
+            var containsBottomRight = containsOrOnBorder(filterArea, rect.getMaxX() - 1, rect.getMaxY() - 1);
+            return containsUpLeft && containsUpRight && containsBottomLeft && containsBottomRight;
+        };
+        boolean allMatch = redTiles.stream().allMatch(p -> containsOrOnBorder(filterArea, p.x, p.y));
+        System.out.println("allMatch = " + allMatch);
+        return pairs.stream().filter(insideUsedArea).mapToLong(pair -> (long) pair.area()).findFirst().orElseThrow();
+    }
+
+    private static @NonNull Polygon createFilteringArea(List<Point> redTiles) {
+        return new Polygon(redTiles.stream().mapToInt(p -> p.x).toArray(), redTiles.stream().mapToInt(p -> p.y).toArray(), redTiles.size());
+    }
+
+    // Check if a point is inside or on the polygon border
+    public static boolean containsOrOnBorder(Polygon polygon, double x, double y) {
+        // Check first if inside
+        if (polygon.contains(x, y)) {
+            return true;
+        }
+
+        // Check if on any border segment
+        for (int i = 0; i < polygon.npoints; i++) {
+            int next = (i + 1) % polygon.npoints; // wrap around
+            Point p1 = new Point(polygon.xpoints[i], polygon.ypoints[i]);
+            Point p2 = new Point(polygon.xpoints[next], polygon.ypoints[next]);
+            if (Line2D.ptSegDist(p1.getX(), p1.getY(), p2.getX(), p2.getY(), x, y) == 0) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
 }
 
-record PairWithDistance(Point first, Point second, double area) implements Comparable<PairWithDistance> {
-    private static final Comparator<PairWithDistance> DISTANCE_COMPARATOR = Comparator.comparingDouble(PairWithDistance::area);
+record PairWithRectangleArea(Point first, Point second, double area) implements Comparable<PairWithRectangleArea> {
+    private static final Comparator<PairWithRectangleArea> DISTANCE_COMPARATOR = Comparator.comparingDouble(PairWithRectangleArea::area);
 
-    PairWithDistance(Point first, Point second) {
+    PairWithRectangleArea(Point first, Point second) {
         this(first, second, Nine.getArea(Nine.fromOppositeCorners(first, second)));
     }
 
     @Override
-    public int compareTo(@NonNull PairWithDistance o) {
+    public int compareTo(@NonNull PairWithRectangleArea o) {
         return DISTANCE_COMPARATOR.compare(this, o);
     }
 }
