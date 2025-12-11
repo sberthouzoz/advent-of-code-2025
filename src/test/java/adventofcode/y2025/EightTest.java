@@ -36,6 +36,13 @@ class EightTest {
         assertThat(result).isEqualTo(40);
     }
 
+    @Test
+    void partTwo() {
+        var result = Eight.partTwo(example.lines());
+
+        assertThat(result).isEqualTo(216 * 117);
+    }
+
     @Nested
     class Point3DTest {
         private final Point3D point1 = new Point3D(984, 92, 344);

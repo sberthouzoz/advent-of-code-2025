@@ -27,6 +27,14 @@ public class Eight {
             System.out.println("Duration = " + Duration.between(start, end));
             System.out.println("partOneResult = " + partOneResult);
         }
+
+        try (var stream = Files.lines(filePath)) {
+            var start = Instant.now();
+            var partTwoResult = partTwo(stream);
+            var end = Instant.now();
+            System.out.println("Duration = " + Duration.between(start, end));
+            System.out.println("partTwoResult = " + partTwoResult);
+        }
     }
 
     public Eight(Stream<String> input) {
@@ -45,7 +53,7 @@ public class Eight {
         Collections.sort(pairsWithDistance);
     }
 
-    public static long partOne(Stream<String> input, int iterations) {
+    public static int partOne(Stream<String> input, int iterations) {
         var junctions = new Eight(input);
 
         for (int i = 0; i < iterations; i++) {
@@ -58,6 +66,15 @@ public class Eight {
     }
 
 
+    public static int partTwo(Stream<String> lines) {
+        var junctions = new Eight(lines);
+
+        for (var pair : junctions.pairsWithDistance) {
+            junctions.circuits.add(pair);
+        }
+        System.out.println("circuits.size() = " + junctions.circuits.size());
+        return junctions.circuits.getLastConnectedPair().first().x() * junctions.circuits.getLastConnectedPair().second().x();
+    }
 }
 
 record Point3D(int x, int y, int z) implements Comparable<Point3D> {
@@ -92,6 +109,7 @@ record Point3DPairWithDistance(Point3D first, Point3D second,
 
 class CircuitSet {
     private final List<Set<Point3D>> circuits = new ArrayList<>();
+    private Point3DPairWithDistance lastConnectedPair;
 
     CircuitSet(List<Point3D> points) {
         for (var point : points) {
@@ -119,10 +137,19 @@ class CircuitSet {
         if (firstIndex != secondIndex) {
             circuits.get(firstIndex).addAll(circuits.get(secondIndex));
             circuits.remove(secondIndex);
+            lastConnectedPair = pair;
         }
     }
 
     public List<Set<Point3D>> getLargest(int limit) {
         return circuits.stream().sorted(comparing(Set::size, reverseOrder())).limit(limit).toList();
+    }
+
+    public Point3DPairWithDistance getLastConnectedPair() {
+        return lastConnectedPair;
+    }
+
+    public int size() {
+        return circuits.size();
     }
 }
