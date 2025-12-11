@@ -2,6 +2,11 @@ package adventofcode.y2025;
 
 import org.jspecify.annotations.NonNull;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.*;
 import java.util.stream.Stream;
 
@@ -12,6 +17,17 @@ public class Eight {
     private final List<Point3D> input;
     private final List<Point3DPairWithDistance> pairsWithDistance = new ArrayList<>();
     private final CircuitSet circuits;
+
+    public static void main(String[] args) throws IOException {
+        var filePath = Path.of(args[0]);
+        try (var stream = Files.lines(filePath)) {
+            var start = Instant.now();
+            var partOneResult = partOne(stream, 1000);
+            var end = Instant.now();
+            System.out.println("Duration = " + Duration.between(start, end));
+            System.out.println("partOneResult = " + partOneResult);
+        }
+    }
 
     public Eight(Stream<String> input) {
         this.input = input.parallel().map(line -> line.split(","))
