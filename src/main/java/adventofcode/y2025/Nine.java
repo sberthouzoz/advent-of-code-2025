@@ -8,10 +8,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.stream.Stream;
 
 public class Nine {
@@ -38,7 +37,7 @@ public class Nine {
     static long partOne(Stream<String> lines) {
         var sep = ',';
         var radix_ten = 10;
-        List<PairWithDistance> pairs = new ArrayList<>();
+        SortedSet<PairWithDistance> pairs = new TreeSet<>();
         var points = lines.map(line -> new Point(Integer.parseInt(line, 0, line.indexOf(sep), radix_ten),
                         Integer.parseInt(line, line.indexOf(sep) + 1, line.length(), radix_ten)))
                 .toList();
@@ -46,17 +45,20 @@ public class Nine {
             var point = points.get(i);
             for (int j = i + 1; j < points.size(); j++) {
                 var other = points.get(j);
-                pairs.add(new PairWithDistance(point, other, point.distance(other)));
+                pairs.add(new PairWithDistance(point, other));
             }
         }
-        Collections.sort(pairs);
         var largestRect = fromOppositeCorners(pairs.getLast().first(), pairs.getLast().second());
         return getArea(largestRect);
     }
 }
 
-record PairWithDistance(Point first, Point second, double distance) implements Comparable<PairWithDistance> {
-    private static final Comparator<PairWithDistance> DISTANCE_COMPARATOR = Comparator.comparingDouble(PairWithDistance::distance);
+record PairWithDistance(Point first, Point second, double area) implements Comparable<PairWithDistance> {
+    private static final Comparator<PairWithDistance> DISTANCE_COMPARATOR = Comparator.comparingDouble(PairWithDistance::area);
+
+    PairWithDistance(Point first, Point second) {
+        this(first, second, Nine.getArea(Nine.fromOppositeCorners(first, second)));
+    }
 
     @Override
     public int compareTo(@NonNull PairWithDistance o) {
