@@ -31,7 +31,7 @@ public class Eight {
             var start = Instant.now();
             var partTwoResult = partTwo(stream);
             var end = Instant.now();
-            System.out.println("Duration = " + Duration.between(start, end));
+            System.out.println("[Part Two] Duration = " + Duration.between(start, end));
             System.out.println("partTwoResult = " + partTwoResult);
         }
     }
