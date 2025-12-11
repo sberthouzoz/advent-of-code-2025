@@ -9,6 +9,21 @@ import static org.assertj.core.api.Assertions.assertThat;
 class NineTest {
     Point point = new Point(2, 5);
     Point point2 = new Point(11, 1);
+    String example = """
+            7,1
+            11,1
+            11,7
+            9,7
+            9,5
+            2,5
+            2,3
+            7,3""";
+
+    @Test
+    void partOne() {
+        var result = Nine.partOne(example.lines());
+        assertThat(result).isEqualTo(50);
+    }
 
     @Test
     void playground() {
