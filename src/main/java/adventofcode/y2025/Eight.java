@@ -37,8 +37,13 @@ public class Eight {
     }
 
     public Eight(Stream<String> input) {
-        List<Point3D> input1 = input.parallel().map(line -> line.split(","))
-                .map(arr -> new Point3D(Integer.parseInt(arr[0]), Integer.parseInt(arr[1]), Integer.parseInt(arr[2])))
+        final var sep = ',';
+        final var radix_ten = 10;
+        List<Point3D> input1 = input.parallel()
+                .map(line -> new Point3D(
+                        Integer.parseInt(line, 0, line.indexOf(sep), radix_ten),
+                        Integer.parseInt(line, line.indexOf(sep) + 1, line.lastIndexOf(sep), radix_ten),
+                        Integer.parseInt(line, line.lastIndexOf(sep) + 1, line.length(), radix_ten)))
                 .toList();
         circuits = new CircuitSet(input1);
         for (int i = 0; i < input1.size(); i++) {
