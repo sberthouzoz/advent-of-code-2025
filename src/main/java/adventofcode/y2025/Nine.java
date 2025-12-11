@@ -3,6 +3,11 @@ package adventofcode.y2025;
 import org.jspecify.annotations.NonNull;
 
 import java.awt.*;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -10,6 +15,16 @@ import java.util.List;
 import java.util.stream.Stream;
 
 public class Nine {
+    public static void main(String[] args) throws IOException {
+        var filePath = Path.of(args[0]);
+        try (Stream<String> stream = Files.lines(filePath)) {
+            var start = Instant.now();
+            var partOneResult = partOne(stream);
+            var end = Instant.now();
+            System.out.println("[Part One] Duration = " + Duration.between(start, end));
+            System.out.println("partOneResult = " + partOneResult);
+        }
+    }
     static Rectangle fromOppositeCorners(Point point1, Point point2) {
         var rect = new Rectangle(new Point(Integer.min(point1.x, point2.x), Integer.min(point1.y, point2.y)));
         rect.add(new Point(Integer.max(point1.x, point2.x) + 1, Integer.max(point1.y, point2.y) + 1));
