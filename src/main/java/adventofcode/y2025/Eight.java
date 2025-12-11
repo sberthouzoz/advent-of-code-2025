@@ -14,7 +14,6 @@ import static java.util.Comparator.comparing;
 import static java.util.Comparator.reverseOrder;
 
 public class Eight {
-    private final List<Point3D> input;
     private final List<Point3DPairWithDistance> pairsWithDistance = new ArrayList<>();
     private final CircuitSet circuits;
 
@@ -38,15 +37,15 @@ public class Eight {
     }
 
     public Eight(Stream<String> input) {
-        this.input = input.parallel().map(line -> line.split(","))
+        List<Point3D> input1 = input.parallel().map(line -> line.split(","))
                 .map(arr -> new Point3D(Integer.parseInt(arr[0]), Integer.parseInt(arr[1]), Integer.parseInt(arr[2])))
                 .toList();
-        circuits = new CircuitSet(this.input);
-        for (int i = 0; i < this.input.size(); i++) {
-            var point = this.input.get(i);
+        circuits = new CircuitSet(input1);
+        for (int i = 0; i < input1.size(); i++) {
+            var point = input1.get(i);
 
-            for (int j = i + 1; j < this.input.size(); j++) {
-                var point2 = this.input.get(j);
+            for (int j = i + 1; j < input1.size(); j++) {
+                var point2 = input1.get(j);
                 pairsWithDistance.add(new Point3DPairWithDistance(point, point2, point.distanceTo(point2)));
             }
         }
@@ -66,11 +65,11 @@ public class Eight {
     }
 
 
-    public static int partTwo(Stream<String> lines) {
+    public static long partTwo(Stream<String> lines) {
         var junctions = new Eight(lines);
 
         junctions.pairsWithDistance.forEach(junctions.circuits::add);
-        return junctions.circuits.getLastConnectedPair().first().x() * junctions.circuits.getLastConnectedPair().second().x();
+        return (long) junctions.circuits.getLastConnectedPair().first().x() * junctions.circuits.getLastConnectedPair().second().x();
     }
 }
 
