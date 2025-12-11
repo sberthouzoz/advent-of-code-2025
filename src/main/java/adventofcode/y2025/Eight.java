@@ -69,10 +69,7 @@ public class Eight {
     public static int partTwo(Stream<String> lines) {
         var junctions = new Eight(lines);
 
-        for (var pair : junctions.pairsWithDistance) {
-            junctions.circuits.add(pair);
-        }
-        System.out.println("circuits.size() = " + junctions.circuits.size());
+        junctions.pairsWithDistance.forEach(junctions.circuits::add);
         return junctions.circuits.getLastConnectedPair().first().x() * junctions.circuits.getLastConnectedPair().second().x();
     }
 }
