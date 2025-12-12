@@ -26,6 +26,14 @@ public class Nine {
             System.out.println("[Part One] Duration = " + Duration.between(start, end));
             System.out.println("partOneResult = " + partOneResult);
         }
+
+        try (Stream<String> stream = Files.lines(filePath)) {
+            var start = Instant.now();
+            var partTwoResult = partTwo(stream);
+            var end = Instant.now();
+            System.out.println("[Part Two] Duration = " + Duration.between(start, end));
+            System.out.println("partTwoResult = " + partTwoResult);
+        }
     }
     static Rectangle fromOppositeCorners(Point point1, Point point2) {
         return new Rectangle(
@@ -77,11 +85,15 @@ public class Nine {
             var containsBottomRight = containsOrOnBorder(filterArea, rect.getMaxX() - 1, rect.getMaxY() - 1);
             return containsUpLeft && containsUpRight && containsBottomLeft && containsBottomRight;
         };
-        boolean allMatch = redTiles.stream().allMatch(p -> containsOrOnBorder(filterArea, p.x, p.y));
-        System.out.println("allMatch = " + allMatch);
-        return pairs.stream().filter(insideUsedArea)
-                .max(PairWithRectangleArea.AREA_COMPARATOR).orElseThrow()
-                .area();
+        //boolean allMatch = redTiles.stream().allMatch(p -> containsOrOnBorder(filterArea, p.x, p.y));
+        //System.out.println("allMatch = " + allMatch);
+        var list = pairs.stream().filter(insideUsedArea)
+                .sorted(PairWithRectangleArea.AREA_COMPARATOR.reversed())
+                //.skip(20)
+                //.limit(20)
+                .toList();
+        //list.forEach(p -> System.out.printf("p.first() = %s, second = %s, area = %d%n", p.first(), p.second(), p.area()));
+        return list.getFirst().area();
     }
 
     private static @NonNull Polygon createFilteringArea(List<Point> redTiles) {
