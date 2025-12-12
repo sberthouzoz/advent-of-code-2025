@@ -10,9 +10,9 @@ import java.nio.file.Path;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Comparator;
+import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.SequencedSet;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -28,13 +28,11 @@ public class Nine {
         }
     }
     static Rectangle fromOppositeCorners(Point point1, Point point2) {
-        var rect = new Rectangle(
+        return new Rectangle(
                 Integer.min(point1.x, point2.x),
                 Integer.min(point1.y, point2.y),
                 Math.abs(point2.x - point1.x) + 1,
                 Math.abs(point2.y - point1.y) + 1);
-
-        return rect;
     }
 
     static long getArea(Rectangle rect) {
@@ -43,13 +41,12 @@ public class Nine {
 
     static long partOne(Stream<String> lines) {
         var points = getRedTiles(lines);
-        SortedSet<PairWithRectangleArea> pairs = createPairs(points);
-        var largestRect = fromOppositeCorners(pairs.getLast().first(), pairs.getLast().second());
-        return getArea(largestRect);
+        SequencedSet<PairWithRectangleArea> pairs = createPairs(points);
+        return pairs.stream().max(PairWithRectangleArea.AREA_COMPARATOR).orElseThrow().area();
     }
 
-    private static @NonNull SortedSet<PairWithRectangleArea> createPairs(List<Point> points) {
-        SortedSet<PairWithRectangleArea> pairs = new TreeSet<>();
+    private static @NonNull SequencedSet<PairWithRectangleArea> createPairs(List<Point> points) {
+        SequencedSet<PairWithRectangleArea> pairs = new LinkedHashSet<>();
         for (int i = 0; i < points.size(); i++) {
             var point = points.get(i);
             for (int j = i + 1; j < points.size(); j++) {
@@ -71,7 +68,7 @@ public class Nine {
     static long partTwo(Stream<String> lines) {
         var redTiles = getRedTiles(lines);
         var filterArea = createFilteringArea(redTiles);
-        var pairs = createPairs(redTiles).reversed();
+        var pairs = createPairs(redTiles);
         Predicate<PairWithRectangleArea> insideUsedArea = (PairWithRectangleArea pair) -> {
             var rect = fromOppositeCorners(pair.first(), pair.second());
             var containsUpLeft = containsOrOnBorder(filterArea, rect.x, rect.y);
@@ -82,7 +79,9 @@ public class Nine {
         };
         boolean allMatch = redTiles.stream().allMatch(p -> containsOrOnBorder(filterArea, p.x, p.y));
         System.out.println("allMatch = " + allMatch);
-        return pairs.stream().filter(insideUsedArea).mapToLong(pair -> (long) pair.area()).findFirst().orElseThrow();
+        return pairs.stream().filter(insideUsedArea)
+                .max(PairWithRectangleArea.AREA_COMPARATOR).orElseThrow()
+                .area();
     }
 
     private static @NonNull Polygon createFilteringArea(List<Point> redTiles) {
@@ -111,15 +110,10 @@ public class Nine {
 
 }
 
-record PairWithRectangleArea(Point first, Point second, double area) implements Comparable<PairWithRectangleArea> {
-    private static final Comparator<PairWithRectangleArea> DISTANCE_COMPARATOR = Comparator.comparingDouble(PairWithRectangleArea::area);
+record PairWithRectangleArea(Point first, Point second, long area) {
+    public static final Comparator<PairWithRectangleArea> AREA_COMPARATOR = Comparator.comparingDouble(PairWithRectangleArea::area);
 
     PairWithRectangleArea(Point first, Point second) {
         this(first, second, Nine.getArea(Nine.fromOppositeCorners(first, second)));
-    }
-
-    @Override
-    public int compareTo(@NonNull PairWithRectangleArea o) {
-        return DISTANCE_COMPARATOR.compare(this, o);
     }
 }
