@@ -20,6 +20,17 @@ class TenTest {
     }
 
     @Test
+    void toggle() {
+        var light = new Lights();
+        var button = ButtonWiring.parse("(2)");
+
+        var toggled = light.toggle(button);
+        assertThat(light).as("toggle should not mutate the bitset").isEqualTo(new Lights());
+        assertThat(light.bs()).isNotEqualTo(toggled.bs());
+        assertThat(toggled).isEqualTo(Lights.parse("[..#.]"));
+    }
+
+    @Test
     void part1_singleMachine() {
         String input = EXAMPLE.lines().findFirst().orElseThrow();
 

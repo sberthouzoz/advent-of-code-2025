@@ -1,10 +1,24 @@
 package adventofcode.y2025;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.*;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public class Ten {
+    public static void main(String[] args) throws IOException {
+        var path = Path.of(args[0]);
+        var start = Instant.now();
+        var partOne = solvePart1(Files.lines(path));
+        var end = Instant.now();
+        System.out.println("Duration = " + Duration.between(start, end));
+        System.out.println("partOne = " + partOne);
+    }
+
     public static int solvePart1(Stream<String> lines) {
         return lines.map(Machine::parse).mapToInt(Machine::solvePart1).sum();
     }
