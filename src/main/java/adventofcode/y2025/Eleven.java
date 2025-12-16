@@ -1,10 +1,27 @@
 package adventofcode.y2025;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class Eleven {
+    public static void main(String[] args) throws IOException {
+        var path = Path.of(args[0]);
+        var start = new Device("you");
+        var end = new Device("out");
+
+        var devices = parse(Files.readString(path));
+        var startInstant = Instant.now();
+        var part1 = countPath(start, end, devices, new HashMap<>());
+        var endInstant = Instant.now();
+        System.out.println("Duration: " + Duration.between(startInstant, endInstant));
+        System.out.println("part1 = " + part1);
+    }
     static int countPath(Device start, Device end, List<Device> devices, Map<Device, Integer> counts) {
         if (counts.containsKey(start)) {
             return counts.get(start);
