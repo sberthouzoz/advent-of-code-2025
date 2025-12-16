@@ -1,5 +1,7 @@
 package adventofcode.y2025;
 
+import others.day10.GaussianElimination;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -17,10 +19,19 @@ public class Ten {
         var end = Instant.now();
         System.out.println("Duration = " + Duration.between(start, end));
         System.out.println("partOne = " + partOne);
+        start = Instant.now();
+        var partTwo = solvePart2(Files.lines(path));
+        end = Instant.now();
+        System.out.println("[Part two] Duration = " + Duration.between(start, end));
+        System.out.println("partTwo = " + partTwo);
     }
 
     public static int solvePart1(Stream<String> lines) {
         return lines.map(Machine::parse).mapToInt(Machine::solvePart1).sum();
+    }
+
+    public static int solvePart2(Stream<String> lines) {
+        return lines.map(Machine::parse).mapToInt(Machine::solvePart2).sum();
     }
 }
 
@@ -105,5 +116,34 @@ record Machine(Lights lightsGoal, List<ButtonWiring> buttonWirings, int[] joltag
             }
         }
         throw new IllegalArgumentException("No solution found!");
+    }
+
+    int solvePart2() {
+        int[][] matrix = createMatrix();
+
+        var solutions = new GaussianElimination(matrix).solve();
+
+        if (solutions.isEmpty()) {
+            throw new IllegalArgumentException("No solution found!");
+        }
+
+        return solutions.stream().mapToInt(arr -> Arrays.stream(arr).sum()).min().orElseThrow();
+    }
+
+    private int[][] createMatrix() {
+        int numRows = joltage.length;
+        int numCols = buttonWirings.size();
+
+        int[][] matrix = new int[numRows][numCols + 1];
+        for (int col = 0; col < numCols; col++) {
+            ButtonWiring buttonWiring = buttonWirings.get(col);
+            for (int lightIndex : buttonWiring.indexes()) {
+                matrix[lightIndex][col] = 1;
+            }
+        }
+        for (int row = 0; row < numRows; row++) {
+            matrix[row][numCols] = joltage[row];
+        }
+        return matrix;
     }
 }

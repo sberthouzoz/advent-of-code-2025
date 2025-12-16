@@ -20,6 +20,13 @@ class TenTest {
     }
 
     @Test
+    void part2() {
+        var res = Ten.solvePart2(EXAMPLE.lines());
+
+        assertThat(res).isEqualTo(33);
+    }
+
+    @Test
     void toggle() {
         var light = new Lights();
         var button = ButtonWiring.parse("(2)");
@@ -45,6 +52,16 @@ class TenTest {
 
         var part1 = res.solvePart1();
         assertThat(part1).isEqualTo(2);
+    }
+
+    @Test
+    void part2_singleMachine() {
+        String input = EXAMPLE.lines().findFirst().orElseThrow();
+
+        var res = Machine.parse(input);
+        var part2 = res.solvePart2();
+
+        assertThat(part2).isEqualTo(10);
     }
 
     @Test
