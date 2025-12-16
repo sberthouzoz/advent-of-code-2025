@@ -21,9 +21,15 @@ public class Eleven {
         var endInstant = Instant.now();
         System.out.println("Duration: " + Duration.between(startInstant, endInstant));
         System.out.println("part1 = " + part1);
+
+        startInstant = Instant.now();
+        var part2 = part2(devices);
+        endInstant = Instant.now();
+        System.out.println("[part 2] Duration: " + Duration.between(startInstant, endInstant));
+        System.out.println("part2 = " + part2);
     }
 
-    static int part2(List<Device> devices) {
+    static long part2(List<Device> devices) {
         Device fft = new Device("fft");
         Device dac = new Device("dac");
         var fftToDac = countPath(fft, dac, devices, new HashMap<>());
@@ -41,7 +47,7 @@ public class Eleven {
         }
     }
 
-    static int countPath(Device start, Device end, List<Device> devices, Map<Device, Integer> counts) {
+    static long countPath(Device start, Device end, List<Device> devices, Map<Device, Long> counts) {
         if (counts.containsKey(start)) {
             return counts.get(start);
         }
@@ -50,7 +56,7 @@ public class Eleven {
         }
         var sum = devices.get(devices.indexOf(start)).outputsTo()
                 .stream()
-                .mapToInt(dev -> countPath(dev, end, devices, counts)).sum();
+                .mapToLong(dev -> countPath(dev, end, devices, counts)).sum();
         counts.put(start, sum);
         return sum;
     }
