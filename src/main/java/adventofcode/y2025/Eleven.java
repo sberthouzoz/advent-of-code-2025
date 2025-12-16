@@ -65,7 +65,7 @@ public class Eleven {
         var initDevices = parseInitial(input.lines());
         initDevices.add(new Device("out"));
         updateOutputs(initDevices, input.lines());
-        return initDevices;
+        return Collections.unmodifiableList(initDevices);
     }
 
     static List<Device> parseInitial(Stream<String> lines) {
