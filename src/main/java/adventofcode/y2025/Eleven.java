@@ -22,6 +22,25 @@ public class Eleven {
         System.out.println("Duration: " + Duration.between(startInstant, endInstant));
         System.out.println("part1 = " + part1);
     }
+
+    static int part2(List<Device> devices) {
+        Device fft = new Device("fft");
+        Device dac = new Device("dac");
+        var fftToDac = countPath(fft, dac, devices, new HashMap<>());
+        Device svr = new Device("svr");
+        Device out = new Device("out");
+        if (fftToDac > 0) {
+            var svrToFft = countPath(svr, fft, devices, new HashMap<>());
+            var dacToOut = countPath(dac, out, devices, new HashMap<>());
+            return svrToFft * fftToDac * dacToOut;
+        } else {
+            var svrToDac = countPath(svr, dac, devices, new HashMap<>());
+            var dacToFft = countPath(dac, fft, devices, new HashMap<>());
+            var fftToOut = countPath(fft, out, devices, new HashMap<>());
+            return svrToDac * dacToFft * fftToOut;
+        }
+    }
+
     static int countPath(Device start, Device end, List<Device> devices, Map<Device, Integer> counts) {
         if (counts.containsKey(start)) {
             return counts.get(start);
