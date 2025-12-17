@@ -20,7 +20,7 @@ public class GaussianElimination {
     }
 
     private static boolean isInstanceOfInt(double d) {
-        return d % 1 == 0;
+        return d == Math.rint(d);
     }
 
     private static int findRowToSwitch(int[][] matrix, int row, int col) {
