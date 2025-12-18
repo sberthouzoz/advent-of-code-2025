@@ -38,9 +38,10 @@ public class Two {
     }
 
     static LongStream createRangeStream(String range) {
-        var splitRange = range.split("-");
-        var begin = Long.parseLong(splitRange[0]);
-        var end = Long.parseLong(splitRange[1]);
+        var radix_ten = 10;
+        var indexOfMinus = range.indexOf('-');
+        var begin = Long.parseLong(range, 0, indexOfMinus, radix_ten);
+        var end = Long.parseLong(range, indexOfMinus + 1, range.length(), radix_ten);
         return LongStream.rangeClosed(begin, end);
     }
 
